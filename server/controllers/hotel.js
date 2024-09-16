@@ -1,5 +1,4 @@
 const Hotel = require('../models/Hotel');
-const Room = require('../models/Room');
 
 const createHotel = async(res, req, next) => {  // HOTEL OLUŞTURUYORUZ (CREATE)
     try{
@@ -40,7 +39,7 @@ const getSingleHotel = async(res, req, next) => {  // HOTEL Details YAPISI İÇ�
     }
 }
 
-const getAllHotel = async(res, req, next) => {  // HOTEL tüm Details YAPISI İÇİN  (findById)
+const getAllHotels = async(res, req, next) => {  // HOTEL tüm Details YAPISI İÇİN  (findById)
     const {min, max, ...others} = req.query;
     try{
      const hotel =  await Hotel.find({
@@ -86,7 +85,7 @@ module.exports = {
     upDateHotel,
     deleteHotel,
     getSingleHotel,
-    getAllHotel,
+    getAllHotels,
     typeByCount,
     typeByCity
 }

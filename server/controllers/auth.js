@@ -3,31 +3,50 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 
-const register = async(req, res, next) => {
-    const {username, password, email} = req.body
-    try{
-        const user = await User.findOne(email);
-        if(user){
-            return res.status(404).json({message : "Bu isimde bir kullanıcı bulunmakta..."});
+const register = async (req, res, next) => {
+    const { username, password, email } = req.body;
+
+    try {
+        // E-posta ile kullanıcıyı arıyoruz
+        const user = await User.findOne({ email });
+        if (user) {
+            return res.status(409).json({ message: "Bu e-posta adresi zaten kayıtlı." }); // 409 Conflict daha uygun
         }
-        if(password.length < 6)
-           res.status(404).json({message : "Bu parola yeterince uzun degil..."});
-           const passwordHash = await bcrypt.hash(password, 12);
-        
-        if(!isEmail(email))
-            res.status(404).json({message : "Bu email dogru degil tekrar deneyiniz..."});
-        
-        const newUser = await User.create({...req.body, password: passwordHash});
-        const token = await jwt.sign({id: newUser._id, idAdmin: newUser.isAdmin}, "SECRET_KEY", {expiresIn: "1h"});
-    
+
+        // Şifrenin uzunluğunu kontrol ediyoruz
+        if (password.length < 6) {
+            return res.status(400).json({ message: "Şifre en az 6 karakter uzunluğunda olmalıdır." }); // 400 Bad Request
+        }
+
+        // E-posta adresinin geçerliliğini kontrol ediyoruz
+        if (!isEmail(email)) {
+            return res.status(400).json({ message: "Geçersiz e-posta adresi." }); // 400 Bad Request
+        }
+
+        // Şifreyi hashliyoruz
+        const passwordHash = await bcrypt.hash(password, 12);
+
+        // Yeni kullanıcıyı oluşturuyoruz
+        const newUser = await User.create({ ...req.body, password: passwordHash });
+
+        // Hassas bilgileri (hashed password) sil
+        const userWithoutPassword = { ...newUser._doc }; // Mongoose dökümantasyonunu düz bir JS objesine çeviriyoruz
+        delete userWithoutPassword.password; // password bilgisini siliyoruz
+
+        // JWT token oluşturuyoruz
+        const token = await jwt.sign({ id: newUser._id, isAdmin: newUser.isAdmin }, "SECRET_KEY", { expiresIn: "1h" });
+
+        // Token'ı cookie olarak ayarlıyoruz ve password'suz kullanıcı objesi ile cevap veriyoruz
         res.cookie("token", token, { httpOnly: true }).status(201).json({
             token,
-            newUser
-        })
-    }catch(err){
-        return res.status(404).json(err);
+            user: userWithoutPassword // Şifresiz kullanıcı objesini gönderiyoruz
+        });
+    } catch (err) {
+        // Hata durumunda 500 Internal Server Error döndürüyoruz
+        return res.status(500).json({ message: 'Sunucu hatası', error: err.message });
     }
-}
+};
+
 
 const login = async(req, res, next) => {
     const {password, email} = req.body

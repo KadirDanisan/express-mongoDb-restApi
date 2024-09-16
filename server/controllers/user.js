@@ -27,7 +27,7 @@ const detailUser = async (res, req, next) => {
     }
 }
 
-const getAllUser = async (res, req, next) => {
+const getAllUsers = async (res, req, next) => {
     try {
       const user = await User.find()
       res.status(200).json(user);
@@ -37,7 +37,7 @@ const getAllUser = async (res, req, next) => {
 }
 
 module.exports = { 
-    getAllUser, 
+    getAllUsers, 
     deleteUser, 
     detailUser, 
     updateUser

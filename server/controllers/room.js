@@ -48,7 +48,7 @@ const getDetailRoom = async(res, req, next) => {
     }
 }
 
-const getAllRoom = async(res, req, next) => {
+const getAllRooms = async(res, req, next) => {
     try{
      const room = await Room.find();
      res.status(200).json(room);
@@ -62,5 +62,5 @@ module.exports = {
     updateRoom,
     deleteRoom,
     getDetailRoom,
-    getAllRoom
+    getAllRooms
 }
