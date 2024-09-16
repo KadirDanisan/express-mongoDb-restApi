@@ -5,10 +5,10 @@ const {verifyAdmin, verifyUser} = require("../middleware/verify");
 
 const router = express.Router();
 
-router.put('/updateUser/:id',verifyUser, updateUser)
-router.delete('/deleteUser/:id',verifyUser, deleteUser)
-router.get('/detailUser/:id',verifyUser, detailUser)
-router.get('/getAllUsers',verifyAdmin, getAllUsers)
+router.put('/user/:id',verifyUser, updateUser)
+router.delete('/user/:id',verifyUser, deleteUser)
+router.get('/user/:id',verifyUser, detailUser)
+router.get('/user',verifyAdmin, getAllUsers)
 
 
 module.exports = router;

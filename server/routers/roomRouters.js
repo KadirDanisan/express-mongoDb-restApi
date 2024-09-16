@@ -5,11 +5,11 @@ const {verifyAdmin} = require("../middleware/verify");
 
 const router = express.Router();
 
-router.post('/createRoom/:id/:hotelId',verifyAdmin, createRoom)
-router.put('/updateRoom/:id',verifyAdmin, updateRoom)
-router.delete('/deleteRoom/:id/:hotelId',verifyAdmin, deleteRoom)
-router.get('/getDetailRoom/:id',getDetailRoom)
-router.get('/getAllRooms', getAllRooms)
+router.post('/rooms/:id/:hotelId',verifyAdmin, createRoom)
+router.put('/rooms/:id',verifyAdmin, updateRoom)
+router.delete('/rooms/:id/:hotelId',verifyAdmin, deleteRoom)
+router.get('/rooms/:id',getDetailRoom)
+router.get('/rooms', getAllRooms)
 
 
 module.exports = router;

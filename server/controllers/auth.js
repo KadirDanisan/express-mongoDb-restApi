@@ -37,10 +37,8 @@ const register = async (req, res, next) => {
         const token = await jwt.sign({ id: newUser._id, isAdmin: newUser.isAdmin }, "SECRET_KEY", { expiresIn: "1h" });
 
         // Token'ı cookie olarak ayarlıyoruz ve password'suz kullanıcı objesi ile cevap veriyoruz
-        res.cookie("token", token, { httpOnly: true }).status(201).json({
-            token,
-            user: userWithoutPassword // Şifresiz kullanıcı objesini gönderiyoruz
-        });
+        res.cookie("token", token, { httpOnly: true }).status(201).send(false);
+        
     } catch (err) {
         // Hata durumunda 500 Internal Server Error döndürüyoruz
         return res.status(500).json({ message: 'Sunucu hatası', error: err.message });
